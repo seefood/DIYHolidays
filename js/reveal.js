@@ -3317,7 +3317,7 @@
 			// - The presentation isn't paused
 			// - The overview isn't active
 			// - The presentation isn't over
-			if( autoSlide && !autoSlidePaused && !isPaused() && !isOverview() && ( !Reveal.isLastSlide() || config.loop === true ) ) {
+			if( autoSlide && !autoSlidePaused && !isPaused() && !isOverview() && ( !Reveal.isLastSlide() || availableFragments().next || config.loop === true ) ) {
 				autoSlideTimeout = setTimeout( navigateNext, autoSlide );
 				autoSlideStartTime = Date.now();
 			}
@@ -3427,14 +3427,18 @@
 			}
 			else {
 				// Fetch the previous horizontal slide, if there is one
-				var previousSlide = dom.wrapper.querySelector( HORIZONTAL_SLIDES_SELECTOR + '.past:nth-child(' + indexh + ')' );
+				var previousSlide;
+
+				if( config.rtl ) {
+					previousSlide = toArray( dom.wrapper.querySelectorAll( HORIZONTAL_SLIDES_SELECTOR + '.future' ) ).pop();
+				}
+				else {
+					previousSlide = toArray( dom.wrapper.querySelectorAll( HORIZONTAL_SLIDES_SELECTOR + '.past' ) ).pop();
+				}
 
 				if( previousSlide ) {
 					var v = ( previousSlide.querySelectorAll( 'section' ).length - 1 ) || undefined;
 					var h = indexh - 1;
-					if( config.rtl ) {
-						h = indexh + 1;
-					}
 					slide( h, v );
 				}
 			}
@@ -3443,16 +3447,20 @@
 	}
 
 	/**
-	 * Same as #navigatePrev() but navigates forwards.
+	 * The reverse of #navigatePrev().
 	 */
 	function navigateNext() {
 
 		// Prioritize revealing fragments
 		if( nextFragment() === false ) {
-			if( config.rtl ) {
-				availableRoutes().down ? navigateDown() : navigateLeft();
-			} else {
-				availableRoutes().down ? navigateDown() : navigateRight();
+			if( availableRoutes().down ) {
+				navigateDown();
+			}
+			else if( config.rtl ) {
+				navigateLeft();
+			}
+			else {
+				navigateRight();
 			}
 		}
 
