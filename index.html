@@ -1,7 +1,8 @@
-<!doctype html>
-<html>
+<!DOCTYPE html>
+<html class="sl-root decks export loaded ua-phantomjs reveal-viewport theme-font-opensans theme-color-sky-blue">
 	<head>
 		<meta charset="utf-8">
+		<meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
 		<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, minimal-ui">
 
 		<title>תשתית בעברית!</title>
@@ -45,6 +46,17 @@
 		<script src="js/reveal.js"></script>
 
 		<script>
+			// Expose speaker notes in case we're printing with share_notes
+			if( SLConfig.deck.notes ) {
+				[].forEach.call( document.querySelectorAll( '.reveal .slides section' ), function( slide ) {
+
+					var value = SLConfig.deck.notes[ slide.getAttribute( 'data-id' ) ];
+					if( value && typeof value === 'string' ) {
+						slide.setAttribute( 'data-notes', value );
+					}
+
+				} );
+			}
 			// More info about config & dependencies:
 			// - https://github.com/hakimel/reveal.js#configuration
 			// - https://github.com/hakimel/reveal.js#dependencies
@@ -53,15 +65,28 @@
 				progress: true,
 				history: true,
 				center: true,
+				mouseWheel: false,
+				//showNotes: SLConfig.deck.share_notes,
 
-				transition: 'slide', // none/fade/slide/convex/concave/zoom
+				autoSlide:    0,
+				autoSlideStoppable: true,
+
+				rollingLinks: false,
+				center:       false,
+				loop:         false,
+				rtl:          true,
+
+				transition: 'convex', // none/fade/slide/convex/concave/zoom
+				//backgroundTransition: 'concave',
+
+				maxScale: 2,
 
 				// Optional reveal.js plugins
 				dependencies: [
 				//	{ src: 'lib/js/classList.js', condition: function() { return !document.body.classList; } },
 					{ src: 'plugin/markdown/marked.js', condition: function() { return !!document.querySelector( '[data-markdown]' ); } },
 					{ src: 'plugin/markdown/markdown.js', condition: function() { return !!document.querySelector( '[data-markdown]' ); } },
-					{ src: 'plugin/notes/notes.js', async: true }
+					{ src: 'plugin/notes/notes.js', async: true },
 					{ src: 'plugin/highlight/highlight.js', async: true, condition: function() { return !!document.querySelector( 'pre code' ); }, callback: function() { hljs.initHighlightingOnLoad(); } },
 					{ src: 'plugin/zoom-js/zoom.js', async: true },
 				]
